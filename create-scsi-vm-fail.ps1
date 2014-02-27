@@ -22,7 +22,10 @@ function Attach-SCSI-Disk([string]$vmName, [int]$address, [string]$scsiVhdPath){
 
 
 $vmName = "SCSITest3"
+
+#Centos 6.5 with LIS 3.5 drivers installed
 $rootVhdPath = "C:\VM\root3.vhd"
+
 $netAdapterVMSwitch = "external"
 Create-Test-Vm $vmName $rootVhdPath $netAdapterVMSwitch 
 
@@ -31,9 +34,9 @@ $address = 10
 Create-SCSI-Vhd $scsiVhdPath
 Attach-SCSI-Disk  $vmName $address $scsiVhdPath
 
-#if on linux vm is executed "ls -lia /dev/sd*", it will not show the attached scsi disk
+#if inside the linux vm we run "ls -lia /dev/s*", it will NOT show the attached scsi disk
 
-#if the following commands are executed, both scsi disks will be shown 
+#by attaching another scsi disk at the first address, both scsi disks will be visible inside the linx vm
 #$address = 0
 #$scsiVhdPath = "C:\VM\SCSITest4.VHDX"
 #Create-SCSI-Vhd $scsiVhdPath

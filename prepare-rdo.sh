@@ -11,7 +11,7 @@ then
         ssh-keygen -f $key -t rsa -N ''
 fi
 nova secgroup-add-rule default tcp 22 22 0.0.0.0/0
-nova secgroup-add-rule default ICMP -1 -1 0.0.0.0/
+nova secgroup-add-rule default ICMP -1 -1 0.0.0.0/0
 nova secgroup-add-rule default ICMP 8 8 0.0.0.0/0
 
 nova keypair-add userkey --pub_key $key".pub"

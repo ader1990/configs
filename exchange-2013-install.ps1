@@ -5,7 +5,7 @@ $adminpassword = "Passw0rd"
 $localAdminUsername = "adminlocal"
 $localAdminPassword = 'Passw0rd'
 $DatabaseName = "exchange-db"
-setupPath = "X:\\mu_exchange_server_2013_x64_dvd_1112105.iso"
+$setupPath = "X:\\mu_exchange_server_2013_x64_dvd_1112105.iso"
 $domain = "CLOUDBASE11"
 $OwaName = "cloudbase-exchange-2"
 $tempFolder = "X:\\exchange\\"
@@ -14,7 +14,6 @@ $stateRegKey = "HKLM:\\Software\\Wow6432Node\\Cloudbase Solutions\\Juju\\" + $ch
 
 #Create local administrator to enable Active Directory Domain join:
 function Create-Local-Admin($localAdminUsername, $localAdminPassword){
-    juju-log.exe "Creating local administrator"
     $computer = [ADSI]"WinNT://$env:computername"
     $localAdmin = $Computer.Create("User", $localAdminUsername)
     $localAdmin.SetPassword($localAdminPassword)
@@ -30,16 +29,19 @@ function log($arg){
   write-host $arg
 }
 
+#New-SmbMapping -LocalPath X: -RemotePath \\10.7.1.10\ISO
+New-PSDrive -Name X -Root \\10.7.1.10\ISO -PSProvider FileSystem
+
 $iso = Mount-DiskImage -PassThru $setupPath
 $isoSetupPath = (Get-Volume -DiskImage $iso).DriveLetter + ":\setup.exe"
 
 Write-Host "Installing Exchange Server 2013"
-if (!($env:userdomain -eq $domain))
+if (!((Get-WmiObject Win32_ComputerSystem).Domain -eq ($domain + ".local")))
 {
 New-Item -Path $stateRegKey -Force
 Set-ItemProperty -Path $stateRegKey  -Name "RebootsRequired" -Value 2
 
-Set-Dns 'Ethernet0' $domainCtrlIp
+Set-Dns 'Ethernet' $domainCtrlIp
 Create-Local-Admin $localAdminUsername $localAdminPassword 
 
 #Join the Active Directory Domain

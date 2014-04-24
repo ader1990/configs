@@ -7,6 +7,7 @@ $mssqlFeatures = "SQLENGINE,ADV_SSMS"
 $mssqlInstanceName = "mssql"
 $mssqlIsoPath = "X:\\en_sql_server_2012_standard_edition_with_sp1_x64_dvd_1228198.iso"
 
+#Enable the use of network installation iso
 New-SmbMapping -LocalPath X: -RemotePath \\10.7.1.10\ISO
 
 $iso = Mount-DiskImage -PassThru $mssqlIsoPath
@@ -15,19 +16,13 @@ $isoSetupPath = (Get-Volume -DiskImage $iso).DriveLetter + ":\setup.exe"
 Write-Host "Installing Sql Server 2012"
 NET USER $mssqlServiceUsername $mssqlServicePassword /ADD
 $hostname = hostname
+
 $PARAMS="/ACTION=install "
-$PARAMS+="/Q " #full quiet mode - required by cloudbaseinit
+$PARAMS+="/Q "
 $PARAMS+="/IACCEPTSQLSERVERLICENSETERMS=1 "
 $PARAMS+="/INSTANCENAME=$mssqlInstanceName "
 $PARAMS+="/FEATURES=$mssqlFeatures " #features enabled. Possible features are stated at http://technet.microsoft.com/en-us/library/ms144259.aspx#Feature
-if ($adDomainName -ne "")
-{
-$PARAMS+="/SQLSYSADMINACCOUNTS=$adDomainName\$adDomainAdminUsername "
-}
-else
-{
 $PARAMS+="/SQLSYSADMINACCOUNTS=.\$mssqlAdminUsername "
-}
 $PARAMS+="/UpdateEnabled=1 "
 $PARAMS+="/AGTSVCSTARTUPTYPE=Automatic "
 $PARAMS+="/BROWSERSVCSTARTUPTYPE=Automatic "
@@ -44,14 +39,11 @@ if (!$?) {
 throw "Failed to install MSSQL SERVER 2012."
 }
 else{
-if ($domain -ne ""){
-#Disable local admin account
-$localAdmin.userflags = 2
-$localAdmin.SetInfo()
-}
 #Unmount the sql server iso file
 Dismount-DiskImage -ImagePath $mssqlIsoPath
+#Enable winrm for remote management
 winrm quickconfig -Force
+#disable firewall rules for remote management and access
 netsh advfirewall firewall add rule name="Open Port 80" dir=in action=allow protocol=TCP localport=80
 netsh advfirewall firewall add rule name="SQL Server" dir=in action=allow protocol=TCP localport=1433
 netsh advfirewall firewall add rule name="SQL Admin Connection" dir=in action=allow protocol=TCP localport=1434
@@ -64,3 +56,4 @@ netsh advfirewall firewall add rule name="SSL" dir=in action=allow protocol=TCP 
 netsh advfirewall firewall add rule name="SQL Browser" dir=in action=allow protocol=UDP localport=1434
 netsh firewall set multicastbroadcastresponse ENABLE
 }
+

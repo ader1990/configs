@@ -11,6 +11,7 @@ $OwaName = "cloudbase-exchange-2"
 $tempFolder = "X:\\exchange\\"
 $domainCtrlIp = "192.168.100.175"
 $stateRegKey = "HKLM:\\Software\\Wow6432Node\\Cloudbase Solutions\\Juju\\" + $charmName + "\\RebootsRequired"
+$temp = "C:\\Windows\\Temp\\"
 
 #Create local administrator to enable Active Directory Domain join:
 function Create-Local-Admin($localAdminUsername, $localAdminPassword){
@@ -62,9 +63,16 @@ try{
 $CountLogon = [int](Get-ItemProperty -Path $stateRegKey -Name RebootsRequired).RebootsRequired
 if ($CountLogon -eq 1)
 {
+(new-object System.Net.WebClient).DownloadFile("http://download.microsoft.com/download/0/A/2/0A28BBFA-CBFA-4C03-A739-30CCA5E21659/FilterPack64bit.exe" , "$temp\FilterPack64bit.exe")
 Start-Process -Wait "$temp\FilterPack64bit.exe" -ArgumentList "/quiet"
+del "$temp\FilterPack64bit.exe"
+(new-object System.Net.WebClient).DownloadFile("http://download.microsoft.com/download/A/A/3/AA345161-18B8-45AE-8DC8-DA6387264CB9/filterpack2010sp1-kb2460041-x64-fullfile-en-us.exe" , "$temp\filterpack2010sp1-kb2460041-x64-fullfile-en-us.exe")
 Start-Process -Wait "$temp\filterpack2010sp1-kb2460041-x64-fullfile-en-us.exe" -ArgumentList "/quiet"
+del "$temp\filterpack2010sp1-kb2460041-x64-fullfile-en-us.exe"
+(new-object System.Net.WebClient).DownloadFile("http://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe" , "$temp\UcmaRuntimeSetup.exe")
 Start-Process -Wait "$temp\UcmaRuntimeSetup.exe" -ArgumentList "/quiet"
+del "$temp\UcmaRuntimeSetup.exe"
+
 Start-Process  -Wait -FilePath $isoSetupPath -ArgumentList "/IAcceptExchangeServerLicenseTerms /ps"
 if (!$?) {
 log ($error[0] | out-string)

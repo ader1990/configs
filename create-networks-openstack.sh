@@ -1,9 +1,16 @@
-FROM_IP=$1
-TO_IP=$2
-neutron_cmd="neutron"
-if [ -n $3 ]; then
-    neutron_cmd=$3
+if [ $# -lt 2 ]; then
+    echo "Usage: <ip start> <ip end> [<neutron>]"
+    exit 1
+else
+    FROM_IP=$1
+    TO_IP=$2
+    if [ $# -eq 2 ]; then
+        neutron_cmd="neutron"
+    else
+        neutron_cmd=$3
+    fi
 fi
+
 NETID1=`$neutron_cmd net-create private --provider:network_type flat --provider:physical_network physnet1 | awk '{if (NR == 6) {print $4}}'`
 SUBNETID1=`$neutron_cmd subnet-create private 10.0.1.0/24 --dns_nameservers list=true 8.8.8.8 | awk '{if (NR == 11) {print $4}}'`
 

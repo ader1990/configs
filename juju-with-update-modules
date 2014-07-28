@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+# Change the path according to the folder 
+# where you have cloned the powershell modules repo
 git_modules_root="/home/avladu/powershell-modules"
 
 for var in "$@"

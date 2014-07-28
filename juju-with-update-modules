@@ -1,0 +1,34 @@
+#!/bin/bash
+set -e
+
+git_modules_root="/home/avladu/powershell-modules"
+
+for var in "$@"
+do
+    
+    if [[ $var =~ local:win2012r2* ]]; then
+        for i in $(echo $var| tr "/" "\n")
+        do
+            true
+        done
+
+        pushd $git_modules_root 1>/dev/null
+        echo 'Pulling latest Powershell Modules from git'
+        git pull
+        popd 1>/dev/null
+    fi
+    
+    if [[ $var =~ --repository* ]]; then
+       for j in $(echo $var| tr "=" "\n")
+       do
+           true
+       done
+    fi
+done
+
+
+full_path="$j/win2012r2/$i/hooks"
+echo "Copying modules to $full_path"
+cp -r "$git_modules_root/Modules" $full_path
+
+juju "$@"

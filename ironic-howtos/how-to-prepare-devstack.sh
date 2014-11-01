@@ -1,16 +1,18 @@
+sudo apt-get install crudini
+
 VM_NAME="ader"
 
 FLAT_NET="flat-net"
 FLAT_SUBNET="flat-subnet"
-GATEWAY="10.1.0.1"
-START_IP="10.1.0.100"
-END_IP="10.1.0.250"
-NETWORK="10.1.0.0/24"
+GATEWAY="10.20.30.1"
+START_IP="10.20.30.100"
+END_IP="10.20.30.190"
+NETWORK="10.20.30.0/24"
 
 #CREATE PORTS
-sudo ovs-vsctl add-port br-eth1 eth1
+sudo ovs-vsctl add-port br-eth0 eth0
 sudo ovs-vsctl del-port br-int ovs-tap1
-sudo ovs-vsctl add-port br-eth1 ovs-tap1
+sudo ovs-vsctl add-port br-eth0 ovs-tap1
 
 #CREATE FLAT NET
 NETID=`neutron net-create $FLAT_NET --shared  --provider:network_type flat --provider:physical_network physnet1 | awk '{if (NR == 6) {print $4}}'`

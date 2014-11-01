@@ -7,11 +7,12 @@ driver="pxe_lego"
 lego_ev3_ip="10.0.1.1"
 lego_ev3_port="A"
 
-IRONIC_VM_SPECS_CPU="1"
-IRONIC_VM_SPECS_RAM="1024"
-IRONIC_VM_SPECS_DISK="10" 
+IRONIC_VM_SPECS_CPU="4"
+IRONIC_VM_SPECS_RAM="8192"
+IRONIC_VM_SPECS_DISK="200" 
 
-MAC="00:0C:29:94:12:E8"
+MAC="C0:3F:D5:64:C9:94"
+#MAC="C9:3F:D5:64:C9:94"
 
 kernel_full_id=`nova flavor-show baremetal | awk '{if (NR == 7) {print $7}}'`
 pxe_deploy_kernel=`echo ${kernel_full_id:1:36}`

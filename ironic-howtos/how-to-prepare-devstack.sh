@@ -1,4 +1,5 @@
-sudo apt-get install crudini
+#used for setting ironic.conf values
+sudo apt-get install crudini -y
 
 VM_NAME="ader"
 
@@ -21,9 +22,18 @@ SUBNETID=`neutron subnet-create --name $FLAT_SUBNET --gateway $GATEWAY --dns-nam
 #BOOT
 nova boot --flavor baremetal --image cirros-0.3.2-x86_64-uec --nic net-id=$NETID $VM_NAME
 
+
+
 #change /etc/ironic/ironic.conf
 #enabled_drivers = fake,pxe_lego,pxe_ssh,pxe_ipmitool
+# [lego]
+# lego_ev3_classes_jar = /opt/stack/reBot/ev3classes.jar:/opt/stack/reBot/.
+# lego_press_time_on = 500
+# lego_press_time_off = 5000
+# lego_move_degrees = 1440
+# fake_lego = true
 
+#PROCESSES
 #python /usr/local/bin/neutron-openvswitch-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini &
 #python /usr/local/bin/neutron-dhcp-agent --config-file /etc/neutron/neutron.conf --config-file=/etc/neutron/dhcp_agent.ini &
 #python /usr/local/bin/neutron-server --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini &
@@ -32,3 +42,7 @@ nova boot --flavor baremetal --image cirros-0.3.2-x86_64-uec --nic net-id=$NETID
 
 #/usr/bin/python /usr/local/bin/ironic-conductor --config-file=/etc/ironic/ironic.conf
 #/usr/bin/python /usr/local/bin/ironic-api --config-file=/etc/ironic/ironic.conf
+
+#delete nodes using mysql
+# mysql -u root -p #password is Passw0rd
+# use ironic; delete from ports where 1;delete from nodes where 1;

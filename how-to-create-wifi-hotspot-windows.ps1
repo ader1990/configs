@@ -16,3 +16,8 @@ netsh wlan start hostednetwork
 # the "Microsoft Hosted Network Virtual Adapter" to be enabled.
 # To make sure this adapter is shown, in Device Manager/View, click on
 # "Show hidden devices"
+
+# In order to have Internet connection, make sure you share the connection
+# which has Internet access with the local area connection of the type
+# "Microsoft Hosted Network Virtual Adapter", which has the name the SSID
+# you previously set.

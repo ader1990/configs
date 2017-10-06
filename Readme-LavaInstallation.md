@@ -102,10 +102,6 @@ git clone https://github.com/ader1990/lava-dispatcher
 cd lava-dispatcher
 git checkout hyperv_booting_method
 
-# Note(avladu): Modify lava_dispatcher/pipeline/actions/boot/hyperv.py
-# with your current setup info like Hyper-V host username/password/lis-pipeline scripts location.
-# This information will be parameterized as device properties (device dictionary).
-
 python setup.py install
 service lava-slave restart
 ```

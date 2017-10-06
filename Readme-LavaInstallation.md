@@ -134,6 +134,7 @@ actions:
       hyperv:
         parameters:
           options:
+            shared_storage_path: '\\shared\storage\path'
             mkisofs_path: 'C:\bin\mkisofs.exe'
             lis_pipeline_scripts_path: 'C:\lis-pipeline\scripts\lis_hyperv_platform\'
             winrm:

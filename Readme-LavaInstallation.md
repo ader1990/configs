@@ -56,8 +56,8 @@ WORKER_HOSTNAME=`hostname -f`
 # Continue to run the rest of the commands.
 lava-server manage pipeline-worker --hostname $WORKER_HOSTNAME
 
-echo "{% extends 'qemu.jinja2' %}" >qemu_description
-lava-server manage device-dictionary --hostname $WORKER_HOSTNAME --import qemu_description
+echo "{% extends 'qemu.jinja2' %}" > qemu_dictionary
+lava-server manage device-dictionary --hostname $WORKER_HOSTNAME --import qemu_dictionary
 
 lava-server manage add-device-type qemu
 lava-server manage add-device $WORKER_HOSTNAME --device-type qemu --worker $WORKER_HOSTNAME
@@ -108,6 +108,49 @@ git checkout hyperv_booting_method
 
 python setup.py install
 service lava-slave restart
+```
+
+Create a Hyper-V device dictionary file at this path on the LAVA Master:
+```bash
+/etc/lava-server/dispatcher-config/device-types/hyperv.jinja2
+```
+
+The content of this file should be:
+```yaml
+{% extends 'base.jinja2' %}
+{% block body %}
+device_type: hyperv
+
+actions:
+  deploy:
+    methods:
+      image:
+        parameters:
+          guest:
+            size: 1
+            interface: 1
+  boot:
+    methods:
+      hyperv:
+        parameters:
+          options:
+            mkisofs_path: 'C:\bin\mkisofs.exe'
+            lis_pipeline_scripts_path: 'C:\lis-pipeline\scripts\lis_hyperv_platform\'
+            winrm:
+              user: "hyper-v-host-username"
+              password: "hyper-v-host-user-password"
+              ip: "hyper-v-host-ip"
+{% endblock %}
+
+```
+
+Make sure you replace the hyperv parameters options with your specific data.
+
+Update your worker dictionary:
+
+```bash
+echo "{% extends 'hyperv.jinja2' %}" > hyperv_dictionary
+lava-server manage device-dictionary --hostname $WORKER_HOSTNAME --import ./hyperv_dictionary
 ```
 
 #### 

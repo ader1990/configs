@@ -7,6 +7,8 @@ Download and gunzip Debian Jessie image which runs on Hyper-V from:
 
   https://images.validation.linaro.org/kvm/standard/large-stable-6.img.gz
 
+#### ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) Do not run apt-get update before changing the sources list documented bellow! ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
+
 Use qemu-img.exe to convert the image to a valid vhdx that can be used for Hyper-V using:
 https://cloudbase.it/qemu-img-windows/
 

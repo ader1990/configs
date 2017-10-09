@@ -88,7 +88,7 @@ https://validation.linaro.org/static/docs/v2/installing_on_debian.html#installin
     * ssh-keygen.exe (included if the Windows git client is installed: https://git-scm.com/download/win).
     * mkisofs.exe (can be downloaded from: http://smithii.com/files/cdrtools-latest.zip).
   * Shared storage between the LAVA Slave and the Windows host. Given the shared storage address is `\\shared\storage\lava`:
-    * On the LAVA Slave: `\\shared\storage\lava` should be already mounted to `/var/lib/share/lava-dispatcher/tmp`.
+    * On the LAVA Slave: `\\shared\storage\lava` should be already mounted to `/var/lib/lava/dispatcher/tmp`.
     * On the Windows host: `\\shared\storage\lava` will be mounted by the lis-pipeline scripts to a convenient location.
 
 ### Installation instructions

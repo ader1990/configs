@@ -86,7 +86,7 @@ https://validation.linaro.org/static/docs/v2/installing_on_debian.html#installin
   * Windows host: WinRM enabled and configured to use password authentication with SSL transport.
   * Windows host: Binaries required in the `${ENV:path}`.
     * ssh-keygen.exe (included if the Windows git client is installed: https://git-scm.com/download/win).
-    * mkisofs.exe (can be downloaded from: http://smithii.com/files/cdrtools-latest.zip).
+    * mkisofs.exe (can be downloaded from this repo).
   * Shared storage between the LAVA Slave and the Windows host. Given the shared storage address is `\\shared\storage\lava`:
     * On the LAVA Slave: `\\shared\storage\lava` should be already mounted to `/var/lib/lava/dispatcher/tmp`.
     * On the Windows host: `\\shared\storage\lava` will be mounted by the lis-pipeline scripts to a convenient location.
@@ -148,13 +148,52 @@ Make sure you replace the hyperv parameters options with your specific data.
 Update your worker dictionary:
 
 ```bash
+lava-server manage add-device-type hyperv
 echo "{% extends 'hyperv.jinja2' %}" > hyperv_dictionary
 lava-server manage device-dictionary --hostname $WORKER_HOSTNAME --import ./hyperv_dictionary
 ```
 
-#### 
-### Configuration instructions
+Install and configure the SMB share:
+```bash
+apt-get -y install samba cifs-utils
+
+# this configs of SAMBA are for testing purposes only
+# as they are wery loose
+mkdir /var/www/html/samba
+chmod -R 777 /var/www/html/samba/
+mv /etc/samba/smb.conf /etc/samba/smb.conf.bak
+
+# Add to /etc/samba/smb.conf the following lines
+cat <<EOT >> etc/samba/smb.conf
+[lava]
+   comment = LAVA shared storage
+   path = /var/www/html/samba
+   browseable = yes
+   read only = no
+   guest ok = yes
+EOT
+
+```
+
+#### LAVA Windows Hyper-V node
+
+Make sure you have WinRM https enabled. You can use this script to enable WinRM:
+```powershell
+https://github.com/ader1990/configs/blob/master/configure-winrm-http-https.ps1
+```
+
+Make sure you have downloaded the mkisofs.exe.
+
+Make sure you have the lis pipeline scripts:
+
+```powershell
+git clone https://github.com/ader1990/lis-pipeline
+cd lis-pipeline
+git checkout dirty_winrm
+```
+
 ### Run instructions
+To be added
 
 ## LAVA Slave on Windows (Obsolete)
 

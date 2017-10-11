@@ -92,6 +92,27 @@ https://validation.linaro.org/static/docs/v2/installing_on_debian.html#installin
     * On the Windows host: `\\shared\storage\lava` will be mounted by the lis-pipeline scripts to a convenient location.
 
 ### Installation instructions
+
+#### LAVA Windows Hyper-V node
+
+Make sure you have WinRM https enabled. You can use this script to enable WinRM:
+```powershell
+https://github.com/ader1990/configs/blob/master/configure-winrm-http-https.ps1
+```
+
+Make sure you have downloaded the mkisofs.exe from https://github.com/ader1990/configs/blob/master/mkisofs.exe .
+
+Make sure you have the latest lis pipeline scripts:
+
+```powershell
+git clone https://github.com/ader1990/lis-pipeline
+cd lis-pipeline
+git checkout dirty_winrm
+```
+
+Remember the paths where you have downloaded the mkisofs.exe and lis-pipeline scripts,
+as you will need them to update the hyper-v device dictionary from the LAVA machine.
+
 #### LAVA Slave
 
 Get the Python sources:
@@ -173,23 +194,6 @@ cat <<EOT >> etc/samba/smb.conf
    guest ok = yes
 EOT
 
-```
-
-#### LAVA Windows Hyper-V node
-
-Make sure you have WinRM https enabled. You can use this script to enable WinRM:
-```powershell
-https://github.com/ader1990/configs/blob/master/configure-winrm-http-https.ps1
-```
-
-Make sure you have downloaded the mkisofs.exe.
-
-Make sure you have the lis pipeline scripts:
-
-```powershell
-git clone https://github.com/ader1990/lis-pipeline
-cd lis-pipeline
-git checkout dirty_winrm
 ```
 
 ### Run instructions

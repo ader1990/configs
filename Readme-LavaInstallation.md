@@ -179,7 +179,7 @@ Install and configure the SMB share:
 apt-get -y install samba cifs-utils
 
 # this configs of SAMBA are for testing purposes only
-# as they are wery loose
+# as they are very, very loose
 mkdir /var/www/html/samba
 chmod -R 777 /var/www/html/samba/
 mv /etc/samba/smb.conf /etc/samba/smb.conf.bak

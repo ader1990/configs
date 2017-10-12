@@ -182,10 +182,10 @@ apt-get -y install samba cifs-utils
 # as they are very, very loose
 mkdir /var/www/html/samba
 chmod -R 777 /var/www/html/samba/
-mv /etc/samba/smb.conf /etc/samba/smb.conf.bak
+cp /etc/samba/smb.conf /etc/samba/smb.conf.bak
 
 # Add to /etc/samba/smb.conf the following lines
-cat <<EOT >> etc/samba/smb.conf
+cat <<EOT >> /etc/samba/smb.conf
 [lava]
    comment = LAVA shared storage
    path = /var/www/html/samba
@@ -193,7 +193,8 @@ cat <<EOT >> etc/samba/smb.conf
    read only = no
    guest ok = yes
 EOT
-
+service smbd restart
+mount //$(hostname)/lava /var/lib/lava/dispatcher/tmp
 ```
 
 ### Run instructions

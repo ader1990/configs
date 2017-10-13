@@ -11,6 +11,14 @@ Download and gunzip Debian Jessie image which runs on Hyper-V from:
 
 Use qemu-img.exe to convert the image to a valid vhdx that can be used for Hyper-V using:
 https://cloudbase.it/qemu-img-windows/
+```powershell
+qemu-img.exe convert -O vhdx <\path\to\large-stable.img> <\path\to\large-stable.vhdx>
+```
+
+It is recommended to extend that VHDX to a size you consider fit for your deployment.
+```powershell
+Resize-VHD -Path <\path\to\large-stable.vhdx> -SizeBytes 50GB
+```
 
 Create a VM with at least 4GB RAM and 4CPU, using as disk the previously obtained VHDX.
 
@@ -18,10 +26,28 @@ Note1: The current Debian stable versions are Jessie and Stretch.
 Stretch version does not work, as when you try to login in the dashboard you get a CSRF error.
 
 Note2: After you create and start the VM, connect in the console with user root (no password).
-The image does not have SSH server installed. The SSH server installation is out of the scope of this tutorial.
+The image does not have SSH server installed. To install it (after you changed the /etc/apt/sources.list!!):
+```bash
+apt-get install -y ssh
+```
 
 Note3: On the Jessie version, the LAVA package version is 16.12 (16.12 is also the github repo tag)
 
+Note4: To extend the root partition
+```bash
+fdisk /dev/sda
+# more info here: https://askubuntu.com/questions/24027/how-can-i-resize-an-ext-root-partition-at-runtime
+# press the following keys in this order
+# d
+# n
+# p
+# enter
+# enter
+# w
+# q
+reboot
+resize2fs /dev/sda1
+```
 
 ### Installation instructions
 Run the following commands:
@@ -63,6 +89,10 @@ lava-server manage device-dictionary --hostname $WORKER_HOSTNAME --import qemu_d
 
 lava-server manage add-device-type qemu
 lava-server manage add-device $WORKER_HOSTNAME --device-type qemu --worker $WORKER_HOSTNAME
+
+# To configure mail server:
+# `dpkg-reconfigure exim4-config` # and set 'internet site; mail is sent and received directly using SMTP' to the first question
+# Add to /etc/lava-server/settings.conf `"EVENT_NOTIFICATION": true` and `service lava-master restart`
 ```
 
 ## Run instructions
@@ -82,7 +112,7 @@ https://validation.linaro.org/static/docs/v2/installing_on_debian.html#installin
 ## LAVA Slave running on Linux with Hyper-V booting method
 
 ### Requirements
-  * Windows host: Hyper-V module installed.
+  * Windows host: Hyper-V module installed and to have VSwitch "External" configured for Internet connectivity and DHCP.
   * Windows host: WinRM enabled and configured to use password authentication with SSL transport.
   * Windows host: Binaries required in the `${ENV:path}`.
     * ssh-keygen.exe (included if the Windows git client is installed: https://git-scm.com/download/win).
@@ -195,6 +225,7 @@ cat <<EOT >> /etc/samba/smb.conf
 EOT
 service smbd restart
 mount //$(hostname)/lava /var/lib/lava/dispatcher/tmp
+# press Enter (as there is an empty password)
 ```
 
 ### Run instructions

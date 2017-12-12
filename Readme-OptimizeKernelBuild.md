@@ -68,15 +68,15 @@ https://github.com/LIS/lis-pipeline/blob/master/scripts/package_building/build_a
     set -xe
 
     dpkg_deb_path=$(which dpkg-deb)
-    cp dpkg_deb_path "${dpkg_deb_path}-original"
+    cp $dpkg_deb_path "${dpkg_deb_path}-original"
     cat > $dpkg_deb_path <<- EOM
     #!/bin/bash
     set -xe
-    args=$@
-    if [[ $@ == *"--build"* ]]; then
-        args="-z3 -Zgzip $args"
+    args=\$@
+    if [[ \$@ == *"--build"* ]]; then
+        args="-z3 -Zgzip \$args"
     fi
-    dpkg-deb-original $args
+    dpkg-deb-original \$args
     EOM
     chmod 777 $dpkg_deb_path
     ```

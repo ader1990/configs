@@ -1,3 +1,12 @@
 {
-   "signedContributors": []
+  "signedContributors": [
+    {
+      "name": "ader1990",
+      "id": 1412442,
+      "comment_id": 2210762354,
+      "created_at": "2024-07-05T12:08:44Z",
+      "repoId": 16877661,
+      "pullRequestNo": 8
+    }
+  ]
 }

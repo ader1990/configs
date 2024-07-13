@@ -85,3 +85,36 @@ popd
 
 ### get the stage 3 built image
 https://mirror.bytemark.co.uk/gentoo/releases/riscv/autobuilds/current-stage3-rv64_lp64d-systemd/stage3-rv64_lp64d-systemd-20240621T170422Z.tar.xz
+
+### how to get Gentoo booting on LicheePi4A
+
+
+Use the uboot.bin/boot.ext4 from the official licheepi:
+
+   * wget https://mirror.iscas.ac.cn/revyos/extra/images/lpi4a/20240601/u-boot-with-spl-lpi4a-16g.bin
+   * wget https://mirror.iscas.ac.cn/revyos/extra/images/lpi4a/20240601/boot-lpi4a-20240601_180941.ext4.zst
+
+Create the root.ext4 according to the requirements of the above boot-lpi4a-20240601_180941.ext4.zst:
+
+```bash
+dd if=/dev/zero of=root.ext4 bs=1M count=2048 && mkfs.ext4 -U 80a5a8e9-c744-491a-93c1-4f4194fd690a -b 4096 -L root root.ext
+mount -o loop root.ext4 /mnt/gentoo/
+tar Jxvf stage3-rv64_lp64d-systemd-20240621T170422Z.tar.xz -C /mnt/gentoo/
+vim /mnt/gentoo//etc/fstab
+#-> add 80a5a8e9-c744-491a-93c1-4f4194fd690a to /etc/fstab
+vim /mnt/gentoo/etc/passwd
+alias rvmake='make ARCH=riscv CROSS_COMPILE=riscv64-unknown-linux-gnu- -j30 '
+cd ../../kernel/
+ls
+rvmake modules_install INSTALL_MOD_PATH=/mnt/gentoo/
+# flash and boot
+# user root has no password
+
+After flashing and rebooting (TBD before and not after):
+
+  * resize2fs mmc block partition4
+  * set ip / network using ifconfig
+  * emerge-webrsync
+  * emerge and enable net-misc/dhcpcd, enable ssh, set ssh root/pass auth, create users
+
+

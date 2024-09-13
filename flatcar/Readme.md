@@ -3,6 +3,7 @@
 #### Requirements
 
 1. Docker installed and to be able to run `docker run hello-world` from a non-root user
+2. QEMU-KVM installed and working to be able to run Flatcar as a VM to test it out
 
 ```bash
 
